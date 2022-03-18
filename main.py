@@ -5,12 +5,13 @@ import time
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-BAZARR_DETAILS = {
-    "headers": {
-        "X-API-KEY": "8c574419651a2223235e6f15ab5d516e",
-    },
-    "route": "http://localhost:6767/"
-}
+with open("api_key.txt") as f:
+    BAZARR_DETAILS = {
+        "headers": {
+            "X-API-KEY": f.read().strip()
+        },
+        "route": "http://localhost:6767/"
+    }
 
 
 def send_request(route, extra_headers, body_dict):
@@ -38,7 +39,7 @@ def send_bazarr_request(endpoint, body_dict):
     return send_request(BAZARR_DETAILS['route'] + endpoint, BAZARR_DETAILS['headers'], body_dict)
 
 
-@app.route("/update_bazarr", methods=['POST'])
+@app.route("/update_bazarr", methods=['POST', 'GET'])
 def update_bazarr():
 
     send_bazarr_request(
